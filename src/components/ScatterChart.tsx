@@ -17,6 +17,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
   const yMax = Math.max(...data.map((d) => d.y));
   const padding = 40;
   const tickCount = 5; // Number of ticks on each axis
+  const tickPadding = 5;
+  const tickLabelPadding = 10;
 
   const xTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * xMax) / tickCount);
   const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * yMax) / tickCount);
@@ -33,8 +35,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
       const xPos = (tick / xMax) * (width - 2 * padding) + padding;
       return (
         <g key={i}>
-          <line x1={xPos} y1={height - padding} x2={xPos} y2={height - padding + 5} stroke="black" />
-          <text x={xPos} y={height - padding + 20} fontSize="12" textAnchor="middle">
+          <line x1={xPos} y1={height - padding} x2={xPos} y2={height - padding + tickPadding} stroke="black" />
+          <text x={xPos} y={height - padding + (tickLabelPadding * 2)} fontSize="12" textAnchor="middle">
             {Math.round(tick)}
           </text>
         </g>
@@ -46,8 +48,8 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
       const yPos = height - ((tick / yMax) * (height - 2 * padding) + padding);
       return (
         <g key={i}>
-          <line x1={padding - 5} y1={yPos} x2={padding} y2={yPos} stroke="black" />
-          <text x={padding - 10} y={yPos + 4} fontSize="12" textAnchor="end">
+          <line x1={padding - tickPadding} y1={yPos} x2={padding} y2={yPos} stroke="black" />
+          <text x={padding - tickLabelPadding} y={yPos + 4} fontSize="12" textAnchor="end">
             {Math.round(tick)}
           </text>
         </g>
