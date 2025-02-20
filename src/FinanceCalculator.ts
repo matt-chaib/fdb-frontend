@@ -27,6 +27,25 @@ export class FinanceCalculator {
     return this.calculateNetValues();
   }
 
+  getIncomes(): Transaction[] {
+    return this.incomes;
+  }
+
+  getExpenses(): Transaction[] {
+    return this.expenses;
+  }
+
+  // Setter to replace incomes
+  setIncomes(incomes: Transaction[]): void {
+    console.log("IN SET INCOMES", incomes)
+    this.incomes = incomes;
+  }
+
+  // Setter to replace expenses
+  setExpenses(expenses: Transaction[]): void {
+    this.expenses = expenses;
+  }
+
   // Add income
   addIncome(name: string, value: number, startDate: number, endDate: number): void {
     if (value <= 0) {
