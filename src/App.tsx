@@ -19,10 +19,17 @@ function App() {
   useEffect(() => {
     if (incomes.length === 0 && expenses.length === 0) {
       setIncomes([
-        { name: "Salary", value: 2000, startDate: 1, endDate: numMonths },
+        { name: "Salary", value: 2000, startDate: 1, endDate: numMonths, oneOff: false },
+        {
+          name: `Income ${incomes.length + 1}`,
+          value: 1000,
+          startDate: 30,
+          endDate: 30,
+          oneOff: true,
+        }
       ]);
       setExpenses([
-        { name: "Rent", value: -800, startDate: 1, endDate: numMonths },
+        { name: "Rent", value: -800, startDate: 1, endDate: numMonths, oneOff: false },
       ]);
     }
   }, []);
@@ -44,6 +51,7 @@ function App() {
       value: 50,
       startDate: 1,
       endDate: numMonths,
+      oneOff: false,
     };
     setIncomes([...incomes, newIncome]);
   };
@@ -55,6 +63,7 @@ function App() {
       value: -30,
       startDate: 1,
       endDate: numMonths,
+      oneOff: false,
     };
     setExpenses([...expenses, newExpense]);
   };

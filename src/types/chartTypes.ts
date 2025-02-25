@@ -10,6 +10,7 @@ export type DataPoint = {
     value: number;
     startDate: number;
     endDate: number;
+    oneOff: boolean;
   };
 
 export type ScatterChartProps = {
