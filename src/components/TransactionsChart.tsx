@@ -18,7 +18,7 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
   const xMax = Math.max(...data.map((d) => d.x));
   const yMax = Math.max(...incomes.map(income => income.value));
   const padding = 40;
-  const [paddingTop, setPaddingTop] = useState(100);
+  const [paddingTop, setPaddingTop] = useState(40);
   const tickCount = 5; // Number of ticks on each axis
   const tickPadding = 5;
   const tickLabelPadding = 10;
@@ -26,11 +26,6 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
   const xTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * xMax) / tickCount);
   const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * yMax) / tickCount);
 
-  useEffect(() => {
-    if (incomes && incomes.length) {
-      setPaddingTop(Math.max(30 * incomes.length, 100))
-    }
-  }, [incomes])
 
   return (
     <div>

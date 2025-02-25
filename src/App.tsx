@@ -6,7 +6,7 @@ import { Transaction } from "./types/chartTypes";
 import { TransactionsChart } from "./components/TransactionsChart";
 
 function App() {
-  const numMonths = 12 * 50;
+  const numMonths = 12 * 100;
   const savingsContributionPercent = 0.2;
   const savingsInterestRate = 0.01;
 
