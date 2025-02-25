@@ -16,7 +16,7 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
 
   // Get the max values for scaling
   const xMax = Math.max(...data.map((d) => d.x));
-  const yMax = Math.max(...incomes.map(income => income.value));
+  const yMax = incomes.every(income => income.value <= 0) ? Math.min(...incomes.map(income => income.value)) : Math.max(...incomes.map(income => income.value));
   const padding = 40;
   const [paddingTop, setPaddingTop] = useState(40);
   const tickCount = 5; // Number of ticks on each axis
@@ -29,9 +29,9 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
 
   return (
     <div>
-      <h2>{title}</h2>
       <svg width={width} height={height} style={{ border: "1px solid black" }}>
-  
+      <text x={width / 2} y={paddingTop / 2} fontSize="14" textAnchor="middle">{title}</text>
+
   {incomes.map((income, index) => {
     return (
     <line 

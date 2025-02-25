@@ -34,8 +34,10 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
 
   return (
     <div>
-      <h2>{title}</h2>
-      <svg width={width} height={height} style={{ border: "1px solid black" }}>
+
+        <svg width={width} height={height} style={{ border: "1px solid black" }}>
+        <text x={width / 2} y={paddingTop / 2} fontSize="14" textAnchor="middle">{title}</text>
+
         {/* X-Axis */}
         <line x1={padding} y1={height - padding} x2={width - padding / 2} y2={height - padding} stroke="black" />
         
@@ -49,7 +51,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
             <g key={i}>
               <line x1={xPos} y1={height - padding} x2={xPos} y2={height - padding + tickPadding} stroke="black" />
               <text x={xPos} y={height - padding + tickLabelPadding * 2} fontSize="12" textAnchor="middle">
-                {Math.round(tick)}
+                {Math.round(tick/12)}
               </text>
             </g>
           );
@@ -63,7 +65,7 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
             <g key={i}>
               <line x1={padding - tickPadding} y1={yPos} x2={padding} y2={yPos} stroke="black" />
               <text x={padding - tickLabelPadding} y={yPos + 4} fontSize="12" textAnchor="end">
-                {Math.round(tick)}
+                {Math.round(tick/1000) + "k"}
               </text>
             </g>
           );
@@ -77,9 +79,9 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
         })}
 
         {/* Axis Labels */}
-        <text x={width / 2} y={height - 5} fontSize="14" textAnchor="middle">X Axis</text>
+        <text x={width / 2} y={height - 5} fontSize="14" textAnchor="middle">Time (years)</text>
         <text x={10} y={height / 2} fontSize="14" textAnchor="middle" transform={`rotate(-90, 10, ${height / 2})`}>
-          Y Axis
+          Amount
         </text>
       </svg>
     </div>

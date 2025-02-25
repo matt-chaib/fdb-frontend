@@ -40,3 +40,18 @@
 .read-the-docs {
   color: #888;
 }
+
+.chart-top-row-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.chart-row-horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.transaction-list-container {
+  min-width: 350px;
+  max-width: 400px;
+}

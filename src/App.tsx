@@ -1,9 +1,10 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { FinanceCalculator } from "./FinanceCalculator";
 import { ScatterChart } from "./components/ScatterChart";
 import { TransactionList } from "./components/TransactionList";
 import { Transaction } from "./types/chartTypes";
 import { TransactionsChart } from "./components/TransactionsChart";
+import "./App.css";
 
 function App() {
   const numMonths = 12 * 100;
@@ -17,8 +18,12 @@ function App() {
   // Set default income and expense on first mount
   useEffect(() => {
     if (incomes.length === 0 && expenses.length === 0) {
-      setIncomes([{ name: "Salary", value: 2000, startDate: 1, endDate: numMonths }]);
-      setExpenses([{ name: "Rent", value: -800, startDate: 1, endDate: numMonths }]);
+      setIncomes([
+        { name: "Salary", value: 2000, startDate: 1, endDate: numMonths },
+      ]);
+      setExpenses([
+        { name: "Rent", value: -800, startDate: 1, endDate: numMonths },
+      ]);
     }
   }, []);
 
@@ -55,47 +60,75 @@ function App() {
   };
 
   return (
-    <div style={{marginLeft: "3rem"}}>
+    <div style={{ marginLeft: "3rem" }}>
       <h1>Financial Overview</h1>
-      <div>
-        <div>
-        {
-          incomes.length > 0 && 
-          <ScatterChart width={800} height={600} title="Total Assets" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
-        }
+      <div className="chart-top-row-container">
+        <div className="transaction-list-container">
+          <div>
+            <div
+              style={{ display: "flex", flexDirection: "row", gap: "0.3rem" }}
+            >
+              <button onClick={handleAddIncome}>Add Income</button>
+              <button onClick={handleAddExpense}>Add Expense</button>
+            </div>
+            <TransactionList transactions={incomes} onUpdate={setIncomes} />
+          </div>
+          <TransactionList transactions={expenses} onUpdate={setExpenses} />
         </div>
         <div>
-        {
-          incomes.length > 0 && 
-          <ScatterChart width={400} height={400} title="Free Cash" data={FinanceCalculator.transformChartValues(freeCash)} incomes={incomes} />
-        }
-        {
-          incomes.length > 0 && 
-          <ScatterChart width={400} height={400} title="Savings" data={FinanceCalculator.transformChartValues(cumulativeSavings)} incomes={incomes} />
-        }
+          {incomes.length > 0 && (
+            <ScatterChart
+              width={800}
+              height={400}
+              title="Total Assets"
+              data={FinanceCalculator.transformChartValues(totalAssets)}
+              incomes={incomes}
+            />
+          )}
+          <div className="chart-row-horizontal">
+            {incomes.length > 0 && (
+              <ScatterChart
+                width={400}
+                height={300}
+                title="Free Cash"
+                data={FinanceCalculator.transformChartValues(freeCash)}
+                incomes={incomes}
+              />
+            )}
+            {incomes.length > 0 && (
+              <ScatterChart
+                width={400}
+                height={300}
+                title="Savings"
+                data={FinanceCalculator.transformChartValues(cumulativeSavings)}
+                incomes={incomes}
+              />
+            )}
+          </div>
+          <div className="chart-row-horizontal">
+        {incomes.length > 0 && (
+          <TransactionsChart
+            width={400}
+            height={300}
+            title="Income"
+            data={FinanceCalculator.transformChartValues(totalAssets)}
+            incomes={incomes}
+          />
+        )}
+         {expenses.length > 0 && (
+          <TransactionsChart
+            width={400}
+            height={300}
+            title="Expenses"
+            data={FinanceCalculator.transformChartValues(totalAssets)}
+            incomes={expenses}
+          />
+        )}
+      </div>
         </div>
+        
       </div>
-      <div>
-        {
-          incomes.length > 0 && 
-          <TransactionsChart width={400} height={300} title="Incomes" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
-        }
-      </div>
-      <div>
-        {
-          expenses.length > 0 && 
-          <TransactionsChart width={400} height={300} title="Expenses" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={expenses} />
-        }
-      </div>
-      <div>
-        <h1>Income</h1>
-        <button onClick={handleAddIncome}>Add Income</button>
-        <TransactionList transactions={incomes} onUpdate={setIncomes} />
-
-        <h1>Expenses</h1>
-        <button onClick={handleAddExpense}>Add Expense</button>
-        <TransactionList transactions={expenses} onUpdate={setExpenses} />
-      </div>
+     
     </div>
   );
 }
