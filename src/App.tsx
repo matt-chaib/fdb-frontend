@@ -82,6 +82,12 @@ function App() {
         }
       </div>
       <div>
+        {
+          expenses.length > 0 && 
+          <TransactionsChart width={400} height={300} title="Expenses" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={expenses} />
+        }
+      </div>
+      <div>
         <h1>Income</h1>
         <button onClick={handleAddIncome}>Add Income</button>
         <TransactionList transactions={incomes} onUpdate={setIncomes} />
