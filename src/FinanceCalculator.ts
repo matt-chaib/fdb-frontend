@@ -1,9 +1,4 @@
-export type Transaction = {
-  name: string;
-  value: number;
-  startDate: number;
-  endDate: number;
-};
+import { Transaction } from "./types/chartTypes";
 
 export type TNetValues = {
   [dict_key: string]: number;
@@ -56,7 +51,7 @@ export class FinanceCalculator {
         runningSavings += currentMonthSavings;
       }
 
-      let savingsInterestAmount = Math.min(runningSavings * savingsInterestRate, 1500)
+      let savingsInterestAmount = Math.min(runningSavings * savingsInterestRate, 200)
       runningSavings += savingsInterestAmount;
 
       // Calculate free cash (net value after savings)

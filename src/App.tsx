@@ -130,7 +130,7 @@ function App() {
             height={300}
             title="Expenses"
             data={FinanceCalculator.transformChartValues(totalAssets)}
-            incomes={expenses}
+            incomes={expenses.filter(expense => !expense.oneOff)}
           />
         )}
       </div>

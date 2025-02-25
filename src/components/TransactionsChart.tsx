@@ -13,7 +13,7 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
   if (data.length === 0) {
     return <p>No data available</p>;
   }
-
+  console.log(incomes)
   // Get the max values for scaling
   const xMax = Math.max(...data.map((d) => d.x));
   const yMax = incomes.every(income => income.value <= 0) ? Math.min(...incomes.map(income => income.value)) : Math.max(...incomes.map(income => income.value));

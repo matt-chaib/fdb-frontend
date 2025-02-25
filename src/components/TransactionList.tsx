@@ -57,6 +57,15 @@ export const TransactionList = ({ transactions, onUpdate }: TransactionListProps
                 style={styles.input}
               />
             </div>
+            <div style={styles.inputWrapper}>
+              <label>One-off</label>
+              <input
+                type="checkbox"
+                value={"false"}
+                onChange={(e) => handleChange(index, "oneOff", Boolean(e.target.value))}
+                style={styles.input}
+              />
+            </div>
           </div>
         </div>
       ))}
