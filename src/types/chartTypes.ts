@@ -17,4 +17,5 @@ export type ScatterChartProps = {
     height?: number;
     data: DataPoint[];
     incomes: Transaction[];
+    title: string;
   };

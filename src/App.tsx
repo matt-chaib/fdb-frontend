@@ -6,7 +6,7 @@ import { Transaction } from "./types/chartTypes";
 import { TransactionsChart } from "./components/TransactionsChart";
 
 function App() {
-  const numMonths = 160;
+  const numMonths = 12 * 50;
   const savingsContributionPercent = 0.2;
   const savingsInterestRate = 0.01;
 
@@ -55,7 +55,7 @@ function App() {
   };
 
   return (
-    <>
+    <div style={{marginLeft: "3rem"}}>
       <h1>Financial Overview</h1>
       <div>
         <div>
@@ -78,7 +78,7 @@ function App() {
       <div>
         {
           incomes.length > 0 && 
-          <TransactionsChart width={400} height={300} data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
+          <TransactionsChart width={400} height={300} title="Incomes" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
         }
       </div>
       <div>
@@ -90,7 +90,7 @@ function App() {
         <button onClick={handleAddExpense}>Add Expense</button>
         <TransactionList transactions={expenses} onUpdate={setExpenses} />
       </div>
-    </>
+    </div>
   );
 }
 

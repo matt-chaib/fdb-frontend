@@ -56,7 +56,8 @@ export class FinanceCalculator {
         runningSavings += currentMonthSavings;
       }
 
-      runningSavings += runningSavings * savingsInterestRate;
+      let savingsInterestAmount = Math.min(runningSavings * savingsInterestRate, 1500)
+      runningSavings += savingsInterestAmount;
 
       // Calculate free cash (net value after savings)
       if (net < 0 && Math.abs(net) > runningFreeCash) {

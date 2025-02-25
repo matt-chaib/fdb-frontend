@@ -6,6 +6,7 @@ export const TransactionsChart: React.FC<ScatterChartProps> = ({
   width = 300,
   height = 200,
   data,
+  title,
   incomes,
 }) => {
   // Prevent errors if data is empty

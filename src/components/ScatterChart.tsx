@@ -5,105 +5,83 @@ import { useState, useEffect } from "react";
 export const ScatterChart: React.FC<ScatterChartProps> = ({
   width = 300,
   height = 200,
-  title="",
+  title = "",
   data,
   incomes,
 }) => {
-  // Prevent errors if data is empty
-  if (data.length === 0) {
-    return <p>No data available</p>;
-  }
+  if (data.length === 0) return <p>No data available</p>;
 
-  // Get the max values for scaling
-  const xMax = Math.max(...data.map((d) => d.x));
-  const yMax = Math.max(...data.map((d) => d.y));
-  const padding = 40;
-  const [paddingTop, setPaddingTop] = useState(30);
-  const tickCount = 5; // Number of ticks on each axis
+  const padding = 60;
+  const [paddingTop, setPaddingTop] = useState(50);
+  const tickCount = 5;
   const tickPadding = 5;
   const tickLabelPadding = 10;
 
+  // 🔹 Determine min/max Y values for scaling (handle negative values)
+  const yMin = Math.min(...data.map((d) => d.y));
+  const yMax = Math.max(...data.map((d) => d.y));
+  const xMax = Math.max(...data.map((d) => d.x));
+
+  // 🔹 Create Y-ticks spanning negative and positive range
+  const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => yMin + (i * (yMax - yMin)) / tickCount);
   const xTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * xMax) / tickCount);
-  const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * yMax) / tickCount);
 
   useEffect(() => {
-    console.log(paddingTop, incomes.length, incomes)
     if (incomes && incomes.length) {
-      // setPaddingTop(Math.max(30 * incomes.length, 100))
+      // setPaddingTop(Math.max(30 * incomes.length, 100));
     }
-  }, [incomes])
+  }, [incomes]);
 
   return (
     <div>
       <h2>{title}</h2>
       <svg width={width} height={height} style={{ border: "1px solid black" }}>
-  
-    {/* {incomes.map((income, index) => {
-      const distanceFromTop = 10 + (index * 5)
-      return (
-      <line 
-        x1={(income.startDate / xMax) * (width - 2 * padding) + padding} 
-        y1={distanceFromTop} 
-        x2={(income.endDate / xMax) * (width - 2 * padding) + padding} 
-        y2={distanceFromTop} 
-        stroke="blue"   // Change color to blue
-        strokeWidth={2} // Adjust thickness
-      />
-      )
-    })} */}
-    {/* <line x1={padding + } y1={padding / 2} x2={padding} y2={height - padding} stroke="black" /> */}
+        {/* X-Axis */}
+        <line x1={padding} y1={height - padding} x2={width - padding / 2} y2={height - padding} stroke="black" />
+        
+        {/* Y-Axis */}
+        <line x1={padding} y1={paddingTop} x2={padding} y2={height - padding} stroke="black" />
 
+        {/* X-axis ticks and labels */}
+        {xTicks.map((tick, i) => {
+          const xPos = (tick / xMax) * (width - 2 * padding) + padding;
+          return (
+            <g key={i}>
+              <line x1={xPos} y1={height - padding} x2={xPos} y2={height - padding + tickPadding} stroke="black" />
+              <text x={xPos} y={height - padding + tickLabelPadding * 2} fontSize="12" textAnchor="middle">
+                {Math.round(tick)}
+              </text>
+            </g>
+          );
+        })}
 
-    {/* Draw Axes */}
-    <line x1={padding} y1={height - padding} x2={width - padding / 2} y2={height - padding} stroke="black" />
-    <line x1={padding} y1={paddingTop} x2={padding} y2={height - padding} stroke="black" />
+        {/* Y-axis ticks and labels */}
+        {yTicks.map((tick, i) => {
+          // 🔹 Adjust y-position to map negative values correctly
+          const yPos = height - ((tick - yMin) / (yMax - yMin)) * (height - 2 * paddingTop) - padding;
+          return (
+            <g key={i}>
+              <line x1={padding - tickPadding} y1={yPos} x2={padding} y2={yPos} stroke="black" />
+              <text x={padding - tickLabelPadding} y={yPos + 4} fontSize="12" textAnchor="end">
+                {Math.round(tick)}
+              </text>
+            </g>
+          );
+        })}
 
-    {/* X-axis ticks and labels */}
-    {xTicks.map((tick, i) => {
-      const xPos = (tick / xMax) * (width - 2 * padding) + padding;
-      return (
-        <g key={i}>
-          <line x1={xPos} y1={height - padding} x2={xPos} y2={height - padding + tickPadding} stroke="black" />
-          <text x={xPos} y={height - padding + (tickLabelPadding * 2)} fontSize="12" textAnchor="middle">
-            {Math.round(tick)}
-          </text>
-        </g>
-      );
-    })}
+        {/* Data Points */}
+        {data.map((point, index) => {
+          const xPos = (point.x / xMax) * (width - 2 * padding) + padding;
+          const yPos = height - ((point.y - yMin) / (yMax - yMin)) * (height - 2 * paddingTop) - padding; // 🔹 Updated for negative Y-values
+          return <circle key={index} cx={xPos} cy={yPos} r={5} fill="blue" />;
+        })}
 
-    {/* Y-axis ticks and labels */}
-    {yTicks.map((tick, i) => {
-      const yPos = height - ((tick / yMax) * (height - 2 * paddingTop) + padding);
-      return (
-        <g key={i}>
-          <line x1={padding - tickPadding} y1={yPos} x2={padding} y2={yPos} stroke="black" />
-          <text x={padding - tickLabelPadding} y={yPos + 4} fontSize="12" textAnchor="end">
-            {Math.round(tick)}
-          </text>
-        </g>
-      );
-    })}
-
-    {/* Data Points */}
-    {data.map((point, index) => (
-      <circle
-        key={index}
-        cx={(point.x / xMax) * (width - 2 * padding) + padding}
-        cy={height - (point.y / yMax) * (height - 2 * paddingTop) - padding}
-        r={5}
-        fill="blue"
-      />
-    ))}
-
-    {/* Axis Labels */}
-    <text x={width / 2} y={height - 5} fontSize="14" textAnchor="middle">
-      {"X Axis"}
-    </text>
-    <text x={10} y={height / 2} fontSize="14" textAnchor="middle" transform={`rotate(-90, 10, ${height / 2})`}>
-      {"Y Axis"}
-    </text>
-  </svg>
+        {/* Axis Labels */}
+        <text x={width / 2} y={height - 5} fontSize="14" textAnchor="middle">X Axis</text>
+        <text x={10} y={height / 2} fontSize="14" textAnchor="middle" transform={`rotate(-90, 10, ${height / 2})`}>
+          Y Axis
+        </text>
+      </svg>
     </div>
-    
   );
 };
