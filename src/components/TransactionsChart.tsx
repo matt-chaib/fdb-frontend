@@ -2,10 +2,9 @@ import React from "react";
 
 import { ScatterChartProps, DataPoint } from "../types/chartTypes";
 import { useState, useEffect } from "react";
-export const ScatterChart: React.FC<ScatterChartProps> = ({
+export const TransactionsChart: React.FC<ScatterChartProps> = ({
   width = 300,
   height = 200,
-  title="",
   data,
   incomes,
 }) => {
@@ -16,9 +15,9 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
 
   // Get the max values for scaling
   const xMax = Math.max(...data.map((d) => d.x));
-  const yMax = Math.max(...data.map((d) => d.y));
+  const yMax = Math.max(...incomes.map(income => income.value));
   const padding = 40;
-  const [paddingTop, setPaddingTop] = useState(30);
+  const [paddingTop, setPaddingTop] = useState(100);
   const tickCount = 5; // Number of ticks on each axis
   const tickPadding = 5;
   const tickLabelPadding = 10;
@@ -27,30 +26,26 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
   const yTicks = Array.from({ length: tickCount + 1 }, (_, i) => (i * yMax) / tickCount);
 
   useEffect(() => {
-    console.log(paddingTop, incomes.length, incomes)
     if (incomes && incomes.length) {
-      // setPaddingTop(Math.max(30 * incomes.length, 100))
+      setPaddingTop(Math.max(30 * incomes.length, 100))
     }
   }, [incomes])
 
   return (
-    <div>
-      <h2>{title}</h2>
-      <svg width={width} height={height} style={{ border: "1px solid black" }}>
+    <svg width={width} height={height} style={{ border: "1px solid black" }}>
   
-    {/* {incomes.map((income, index) => {
-      const distanceFromTop = 10 + (index * 5)
+    {incomes.map((income, index) => {
       return (
       <line 
         x1={(income.startDate / xMax) * (width - 2 * padding) + padding} 
-        y1={distanceFromTop} 
+        y1={height - (income.value / yMax) * (height - 2 * paddingTop) - padding} 
         x2={(income.endDate / xMax) * (width - 2 * padding) + padding} 
-        y2={distanceFromTop} 
+        y2={height - (income.value / yMax) * (height - 2 * paddingTop) - padding} 
         stroke="blue"   // Change color to blue
         strokeWidth={2} // Adjust thickness
       />
       )
-    })} */}
+    })}
     {/* <line x1={padding + } y1={padding / 2} x2={padding} y2={height - padding} stroke="black" /> */}
 
 
@@ -84,17 +79,6 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
       );
     })}
 
-    {/* Data Points */}
-    {data.map((point, index) => (
-      <circle
-        key={index}
-        cx={(point.x / xMax) * (width - 2 * padding) + padding}
-        cy={height - (point.y / yMax) * (height - 2 * paddingTop) - padding}
-        r={5}
-        fill="blue"
-      />
-    ))}
-
     {/* Axis Labels */}
     <text x={width / 2} y={height - 5} fontSize="14" textAnchor="middle">
       {"X Axis"}
@@ -103,7 +87,5 @@ export const ScatterChart: React.FC<ScatterChartProps> = ({
       {"Y Axis"}
     </text>
   </svg>
-    </div>
-    
   );
 };

@@ -1,64 +1,97 @@
-import { DataPoint } from './types/chartTypes';
-import { ScatterChart } from './components/ScatterChart';
-import './App.css'
-import { FinanceCalculator } from './FinanceCalculator';
-import { useState } from 'react';
-import { Transaction } from './FinanceCalculator';
-import { TransactionList } from './components/TransactionList';
+import { useState, useEffect} from "react";
+import { FinanceCalculator } from "./FinanceCalculator";
+import { ScatterChart } from "./components/ScatterChart";
+import { TransactionList } from "./components/TransactionList";
+import { Transaction } from "./types/chartTypes";
+import { TransactionsChart } from "./components/TransactionsChart";
+
 function App() {
-  const numMonths: number = 160;
+  const numMonths = 160;
+  const savingsContributionPercent = 0.2;
+  const savingsInterestRate = 0.01;
 
-  // Store FinanceCalculator in state
-  const [calc] = useState(() => new FinanceCalculator(numMonths));
-  const [update, setUpdate] = useState(0); // Force re-render
+  // Store incomes and expenses in React state
+  const [incomes, setIncomes] = useState<Transaction[]>([]);
+  const [expenses, setExpenses] = useState<Transaction[]>([]);
 
-  // Initialize transactions only once
-  if (update === 0) {
-    calc.addIncome("Salary", 100, 1, numMonths);
-    calc.addExpense("Bills", -50, 5, 50);
-    setUpdate(1);
-  }
+  // Set default income and expense on first mount
+  useEffect(() => {
+    if (incomes.length === 0 && expenses.length === 0) {
+      setIncomes([{ name: "Salary", value: 2000, startDate: 1, endDate: numMonths }]);
+      setExpenses([{ name: "Rent", value: -800, startDate: 1, endDate: numMonths }]);
+    }
+  }, []);
 
-  // Function to add a new income
+  // Compute all financial values in one pass
+  const { netValues, cumulativeSavings, freeCash, totalAssets } =
+    FinanceCalculator.computeFinancialValues(
+      incomes,
+      expenses,
+      numMonths,
+      savingsContributionPercent,
+      savingsInterestRate
+    );
+
+  // Function to add an income
   const handleAddIncome = () => {
-    calc.addIncome(`Income ${calc.getIncomes().length + 1}`, 50, 1, numMonths);
-    setUpdate((prev) => prev + 1); // Re-render UI
+    const newIncome: Transaction = {
+      name: `Income ${incomes.length + 1}`,
+      value: 50,
+      startDate: 1,
+      endDate: numMonths,
+    };
+    setIncomes([...incomes, newIncome]);
   };
 
-  // Function to add a new expense
+  // Function to add an expense
   const handleAddExpense = () => {
-    calc.addExpense(`Expense ${calc.getExpenses().length + 1}`, -30, 1, numMonths);
-    setUpdate((prev) => prev + 1); // Re-render UI
-  };
-
-  const handleIncomeUpdate = (updatedIncomes: Transaction[]) => {
-    calc.setIncomes(updatedIncomes);
-    setUpdate((prev) => prev + 1);
-  };
-
-  const handleExpenseUpdate = (updatedExpenses: Transaction[]) => {
-    calc.setExpenses(updatedExpenses);
-    setUpdate((prev) => prev + 1);
+    const newExpense: Transaction = {
+      name: `Expense ${expenses.length + 1}`,
+      value: -30,
+      startDate: 1,
+      endDate: numMonths,
+    };
+    setExpenses([...expenses, newExpense]);
   };
 
   return (
     <>
+      <h1>Financial Overview</h1>
       <div>
-        <ScatterChart width={400} height={300} data={calc.prepareCumulativeValuesGraphData()} />
+        <div>
+        {
+          incomes.length > 0 && 
+          <ScatterChart width={800} height={600} title="Total Assets" data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
+        }
+        </div>
+        <div>
+        {
+          incomes.length > 0 && 
+          <ScatterChart width={400} height={400} title="Free Cash" data={FinanceCalculator.transformChartValues(freeCash)} incomes={incomes} />
+        }
+        {
+          incomes.length > 0 && 
+          <ScatterChart width={400} height={400} title="Savings" data={FinanceCalculator.transformChartValues(cumulativeSavings)} incomes={incomes} />
+        }
+        </div>
+      </div>
+      <div>
+        {
+          incomes.length > 0 && 
+          <TransactionsChart width={400} height={300} data={FinanceCalculator.transformChartValues(totalAssets)} incomes={incomes} />
+        }
       </div>
       <div>
         <h1>Income</h1>
         <button onClick={handleAddIncome}>Add Income</button>
-        <TransactionList transactions={calc.getIncomes()} onUpdate={handleIncomeUpdate} />
+        <TransactionList transactions={incomes} onUpdate={setIncomes} />
 
         <h1>Expenses</h1>
         <button onClick={handleAddExpense}>Add Expense</button>
-        <TransactionList transactions={calc.getExpenses()} onUpdate={handleExpenseUpdate} />
+        <TransactionList transactions={expenses} onUpdate={setExpenses} />
       </div>
     </>
   );
 }
 
-
-
-export default App
+export default App;
