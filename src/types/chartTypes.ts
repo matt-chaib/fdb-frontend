@@ -5,13 +5,26 @@ export type DataPoint = {
     y: number;
   };
   
-  export type Transaction = {
-    name: string;
-    value: number;
-    startDate: number;
-    endDate: number;
-    oneOff: boolean;
-  };
+export type TransactionType = "Salary" | "Loan" | "Expense" | "Other";
+
+export type Transaction = | {
+  name: string;
+  type: "Salary";
+  value: number;
+  startDate: number;
+  endDate: number;
+  oneOff: boolean;
+  pensionContributionPercent: number; // Required for Salary
+}
+| {
+  name: string;
+  type: "Loan" | "Expense" | "Other";
+  value: number;
+  startDate: number;
+  endDate: number;
+  oneOff: boolean;
+  pensionContributionPercent?: never; // Disallowed for other types
+};
 
 export type ScatterChartProps = {
     width?: number;

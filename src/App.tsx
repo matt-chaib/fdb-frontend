@@ -19,23 +19,48 @@ function App() {
   useEffect(() => {
     if (incomes.length === 0 && expenses.length === 0) {
       setIncomes([
-        { name: "Salary", value: 2000, startDate: 1, endDate: numMonths, oneOff: false },
+        {
+          name: "Salary",
+          value: 2000,
+          startDate: 1,
+          endDate: numMonths,
+          oneOff: false,
+          type: "Salary",
+          pensionContributionPercent: 0.07,
+        },
         {
           name: `Income ${incomes.length + 1}`,
           value: 1000,
           startDate: 30,
           endDate: 30,
           oneOff: true,
-        }
+          type: "Salary",
+          pensionContributionPercent: 0.07,
+        },
       ]);
       setExpenses([
-        { name: "Rent", value: -800, startDate: 1, endDate: numMonths, oneOff: false },
+        {
+          name: "Rent",
+          value: -800,
+          startDate: 1,
+          endDate: numMonths,
+          oneOff: false,
+          type: "Expense",
+        },
+        {
+          name: "Rent",
+          value: -800,
+          startDate: 120,
+          endDate: numMonths,
+          oneOff: false,
+          type: "Expense",
+        },
       ]);
     }
   }, []);
 
   // Compute all financial values in one pass
-  const { netValues, cumulativeSavings, freeCash, totalAssets } =
+  const { netValues, cumulativeSavings, freeCash, totalAssets, pension } =
     FinanceCalculator.computeFinancialValues(
       incomes,
       expenses,
@@ -43,6 +68,8 @@ function App() {
       savingsContributionPercent,
       savingsInterestRate
     );
+
+    console.log("Penions", pension)
 
   // Function to add an income
   const handleAddIncome = () => {
@@ -52,6 +79,8 @@ function App() {
       startDate: 1,
       endDate: numMonths,
       oneOff: false,
+      type: "Salary",
+      pensionContributionPercent: 0.07,
     };
     setIncomes([...incomes, newIncome]);
   };
@@ -64,6 +93,7 @@ function App() {
       startDate: 1,
       endDate: numMonths,
       oneOff: false,
+      type: "Expense",
     };
     setExpenses([...expenses, newExpense]);
   };
@@ -115,29 +145,38 @@ function App() {
             )}
           </div>
           <div className="chart-row-horizontal">
-        {incomes.length > 0 && (
-          <TransactionsChart
-            width={400}
-            height={300}
-            title="Income"
-            data={FinanceCalculator.transformChartValues(totalAssets)}
-            incomes={incomes}
-          />
-        )}
-         {expenses.length > 0 && (
-          <TransactionsChart
-            width={400}
-            height={300}
-            title="Expenses"
-            data={FinanceCalculator.transformChartValues(totalAssets)}
-            incomes={expenses.filter(expense => !expense.oneOff)}
-          />
-        )}
-      </div>
+            {incomes.length > 0 && (
+              <TransactionsChart
+                width={400}
+                height={300}
+                title="Income"
+                data={FinanceCalculator.transformChartValues(totalAssets)}
+                incomes={incomes}
+              />
+            )}
+            {expenses.length > 0 && (
+              <TransactionsChart
+                width={400}
+                height={300}
+                title="Expenses"
+                data={FinanceCalculator.transformChartValues(totalAssets)}
+                incomes={expenses.filter((expense) => !expense.oneOff)}
+              />
+            )}
+          </div>
+          <div>
+            {Object.values(pension).length > 0 && (
+              <ScatterChart
+              width={400}
+              height={300}
+              title="Pension"
+              data={FinanceCalculator.transformChartValues(pension)}
+              incomes={incomes}
+            />
+            )}
+          </div>
         </div>
-        
       </div>
-     
     </div>
   );
 }

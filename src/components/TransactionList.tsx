@@ -1,4 +1,4 @@
-import { Transaction } from "../FinanceCalculator";
+import { Transaction } from "../types/chartTypes";
 
 type TransactionListProps = {
   transactions: Transaction[];
@@ -25,6 +25,37 @@ export const TransactionList = ({ transactions, onUpdate }: TransactionListProps
             onChange={(e) => handleChange(index, "name", e.target.value)}
             style={styles.nameInput}
           />
+
+          {/* Transaction Type Dropdown */}
+          <div style={styles.inputWrapper}>
+            <label>Type</label>
+            <select
+              value={transaction.type}
+              onChange={(e) => handleChange(index, "type", e.target.value)}
+              style={styles.select}
+            >
+              <option value="Salary">Salary</option>
+              <option value="Loan">Loan</option>
+              <option value="Expense">Expense</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {/* Pension Contribution Slider (Only for Salary) */}
+          {transaction.type === "Salary" && (
+            <div style={styles.inputWrapper}>
+              <label>Pension Contribution: {Math.round(transaction.pensionContributionPercent * 100)}%</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={transaction.pensionContributionPercent ?? 7}
+                onChange={(e) => handleChange(index, "pensionContributionPercent", Number(e.target.value))}
+                style={styles.slider}
+              />
+            </div>
+          )}
 
           {/* Inputs for Start Date, End Date, and Value */}
           <div style={styles.inputsContainer}>
